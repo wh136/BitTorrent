@@ -1,0 +1,35 @@
+version: '3.0'
+services:
+  opentracker:
+    image: lednerb/opentracker-docker
+    ports:
+      - "1234:1234"
+      - "1234:1234/udp"
+    links:
+      - "mongo-m:mongodb"
+      - "redis-m:redis"
+    volumes:
+      - /data/download:/home/yvo/conf_master/static
+
+    networks:
+      - vdi
+    restart: always
+
+# http://IP:1234/announce
+#或者：
+# udp://IP:1234/announce
+# transmission-create -t udp://IP:1234/announce -o /root/a.torrent /root/a
+  transmission:
+    image:
+      ports:
+        - ""
+        - ""
+    links:
+      - "opentracker:opentracker"
+    networks:
+      - vdi
+      restart: always
+
+networks:
+  vdi:
+    driver: bridge
